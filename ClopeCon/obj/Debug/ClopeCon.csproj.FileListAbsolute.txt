@@ -1,0 +1,7 @@
+C:\Sinitsyn\Programming\ClopeCon\ClopeCon\bin\Debug\ClopeCon.exe.config
+C:\Sinitsyn\Programming\ClopeCon\ClopeCon\bin\Debug\ClopeCon.exe
+C:\Sinitsyn\Programming\ClopeCon\ClopeCon\bin\Debug\ClopeCon.pdb
+C:\Sinitsyn\Programming\ClopeCon\ClopeCon\obj\Debug\ClopeCon.csprojResolveAssemblyReference.cache
+C:\Sinitsyn\Programming\ClopeCon\ClopeCon\obj\Debug\ClopeCon.csproj.CoreCompileInputs.cache
+C:\Sinitsyn\Programming\ClopeCon\ClopeCon\obj\Debug\ClopeCon.exe
+C:\Sinitsyn\Programming\ClopeCon\ClopeCon\obj\Debug\ClopeCon.pdb
