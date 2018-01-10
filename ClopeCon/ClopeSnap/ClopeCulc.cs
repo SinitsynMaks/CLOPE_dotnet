@@ -51,7 +51,7 @@ namespace ClopeCon.ClopeSnap
                 var clustNew = new ClopeCluster();
 
                 //Считаем цену добавления транз в новый(пустой) кластер
-                //Пока эта цена для нас максимум
+                //Это значение - отправная точка для нас
                 maxDelta = DeltaAdd(null, currentTransaction, repulsCoeff);
 
                 var currentClustersCount = clusterDict.Count;
@@ -112,11 +112,17 @@ namespace ClopeCon.ClopeSnap
                 moved = false;
                 foreach (var tr in transactionsTable)
                 {
-                    double maxDelta = 0;
+                    // Цена добавления транзакции в новый кластер
+                    double newDelta = DeltaAdd(null, tr, repulsCoeff); ;
                     var oldClusterNumber = tr.ClusterNumber;
                     var newClusterNumber = 0;
+
                     // Узнаем цену удаления транзакции из ее текущего кластера
                     double removeDelta = DeltaRemove(clusterDict[oldClusterNumber], tr, repulsCoeff);
+
+                    // С этой опорной величиной добавления транзакции в новый кластер
+                    // мы будем сравнивать перетасовку транзакций в имеющиеся кластеры
+                    double maxDelta = newDelta + removeDelta;
 
                     //Теперь перебираем все кластеры, кроме того, где лежала наша транзакция
                     //и узнаем стоимость запиха транзакции туда
@@ -125,7 +131,8 @@ namespace ClopeCon.ClopeSnap
                     {
                         double addDelta = DeltaAdd(pair.Value, tr, repulsCoeff);
 
-                        // Если суммарная стоимость от удаления и добавления максимальна, решаем положить транзакцию в этот кластер
+                        // Если суммарная стоимость от удаления и добавления в существующий кластер больше, чем в новый,
+                        // решаем положить транзакцию в этот существующий кластер
                         if (addDelta + removeDelta > maxDelta)
                         {
                             maxDelta = addDelta + removeDelta;
@@ -136,11 +143,22 @@ namespace ClopeCon.ClopeSnap
                         }
                     }
 
-                    if (maxDelta > 0)
+                    if (maxDelta > (newDelta + removeDelta))
                     {
+                        // Если в имеющийся кластер оказалось положить выгоднее, кладем туда
                         clusterDict[oldClusterNumber].RemoveTransaction(tr);
                         clusterDict[newClusterNumber].AddTransaction(tr);
                         moved = true;
+                    }
+                    // Иначе кладем в новый кластер
+                    else
+                    {
+                        var clast = new ClopeCluster();
+                        clusterDict[oldClusterNumber].RemoveTransaction(tr);
+                        newClusterNumber = clusterDict.Count + 1;
+                        tr.ClusterNumber = newClusterNumber;
+                        clusterDict.Add(newClusterNumber, clast);
+                        clusterDict[newClusterNumber].AddTransaction(tr);
                     }
                 }
             }

@@ -5,3 +5,10 @@ C:\Sinitsyn\Programming\ClopeCon\ClopeCon\obj\Debug\ClopeCon.csprojResolveAssemb
 C:\Sinitsyn\Programming\ClopeCon\ClopeCon\obj\Debug\ClopeCon.csproj.CoreCompileInputs.cache
 C:\Sinitsyn\Programming\ClopeCon\ClopeCon\obj\Debug\ClopeCon.exe
 C:\Sinitsyn\Programming\ClopeCon\ClopeCon\obj\Debug\ClopeCon.pdb
+C:\Sinitsyn\CLOPE_dotnet\ClopeCon\bin\Debug\ClopeCon.exe.config
+C:\Sinitsyn\CLOPE_dotnet\ClopeCon\bin\Debug\ClopeCon.exe
+C:\Sinitsyn\CLOPE_dotnet\ClopeCon\bin\Debug\ClopeCon.pdb
+C:\Sinitsyn\CLOPE_dotnet\ClopeCon\obj\Debug\ClopeCon.csprojResolveAssemblyReference.cache
+C:\Sinitsyn\CLOPE_dotnet\ClopeCon\obj\Debug\ClopeCon.csproj.CoreCompileInputs.cache
+C:\Sinitsyn\CLOPE_dotnet\ClopeCon\obj\Debug\ClopeCon.exe
+C:\Sinitsyn\CLOPE_dotnet\ClopeCon\obj\Debug\ClopeCon.pdb
