@@ -113,45 +113,36 @@ namespace ClopeCon.ClopeSnap
                 foreach (var tr in transactionsTable)
                 {
                     // Цена добавления транзакции в новый кластер
-                    double newDelta = DeltaAdd(null, tr, repulsCoeff); ;
+                    double maxDelta = DeltaAdd(null, tr, repulsCoeff);
+
+                    // Запоминаем номер старого кластера, в котором лежала транзакция
                     var oldClusterNumber = tr.ClusterNumber;
                     var newClusterNumber = 0;
 
                     // Узнаем цену удаления транзакции из ее текущего кластера
                     double removeDelta = DeltaRemove(clusterDict[oldClusterNumber], tr, repulsCoeff);
 
-                    // С этой опорной величиной добавления транзакции в новый кластер
-                    // мы будем сравнивать перетасовку транзакций в имеющиеся кластеры
-                    double maxDelta = newDelta + removeDelta;
-
                     //Теперь перебираем все кластеры, кроме того, где лежала наша транзакция
                     //и узнаем стоимость запиха транзакции туда
-                    var arrayWithoutCurrentTrtansaction = clusterDict.Where(kvp => kvp.Key != tr.ClusterNumber).ToArray();
-                    foreach (KeyValuePair<int, ClopeCluster> pair in arrayWithoutCurrentTrtansaction)
+                    var arrayWithoutCurrentCluster = clusterDict.Where(kvp => kvp.Key != tr.ClusterNumber).ToArray();
+                    foreach (KeyValuePair<int, ClopeCluster> pair in arrayWithoutCurrentCluster)
                     {
                         double addDelta = DeltaAdd(pair.Value, tr, repulsCoeff);
 
-                        // Если суммарная стоимость от удаления и добавления в существующий кластер больше, чем в новый,
+                        // Если суммарная стоимость от удаления и добавления в существующий кластер больше нуля,
                         // решаем положить транзакцию в этот существующий кластер
-                        if (addDelta + removeDelta > maxDelta)
+                        if (addDelta + removeDelta > 0)
                         {
-                            maxDelta = addDelta + removeDelta;
+                            //maxDelta = addDelta + removeDelta;
 
-                            // Поставили пока новый кластер у транзакции
+                            // Запомнили новый кластер у транзакции
                             newClusterNumber = pair.Key;
                             tr.ClusterNumber = newClusterNumber;
                         }
                     }
 
-                    if (maxDelta > (newDelta + removeDelta))
-                    {
-                        // Если в имеющийся кластер оказалось положить выгоднее, кладем туда
-                        clusterDict[oldClusterNumber].RemoveTransaction(tr);
-                        clusterDict[newClusterNumber].AddTransaction(tr);
-                        moved = true;
-                    }
-                    // Иначе кладем в новый кластер
-                    else
+                    // Если в новый кластер положить выгоднее, кладем туда
+                    if (maxDelta + removeDelta > 0)
                     {
                         var clast = new ClopeCluster();
                         clusterDict[oldClusterNumber].RemoveTransaction(tr);
@@ -159,6 +150,17 @@ namespace ClopeCon.ClopeSnap
                         tr.ClusterNumber = newClusterNumber;
                         clusterDict.Add(newClusterNumber, clast);
                         clusterDict[newClusterNumber].AddTransaction(tr);
+
+                        moved = true;
+                    }
+
+                    // Если был выявлен другой имеющийся кластер в foreach, куда выгоднее положить транзакцию, кладем её туда
+                    if (newClusterNumber != 0)
+                    {
+                        clusterDict[oldClusterNumber].RemoveTransaction(tr);
+                        clusterDict[newClusterNumber].AddTransaction(tr);
+
+                        moved = true;
                     }
                 }
             }
