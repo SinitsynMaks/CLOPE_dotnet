@@ -98,6 +98,7 @@ namespace ClopeCon.ClopeSnap
             }
             Console.WriteLine($"Общее количество кластеров - {clusterDict.Count}");
             Console.WriteLine($"Общее число транзакций в словаре - {clusterDict.Values.Select(k => k.TransCount).Sum()}");
+            Console.WriteLine($"Число транзакций в листе с номером кластера 12 - {transactionsTable.Count(t => t.ClusterNumber == 12)}");
             Console.WriteLine("-------------------------------------------");
         }
 
@@ -110,61 +111,71 @@ namespace ClopeCon.ClopeSnap
             {
                 countIteration++;
                 moved = false;
-                foreach (var tr in transactionsTable)
+
+                var count1 = transactionsTable.Count(t => t.ClusterNumber == 12);
+                var t1 = transactionsTable[3001];
+                var t2 = transactionsTable[3040];
+
+                for  (int i = 0; i < transactionsTable.Count; i++)
                 {
-                    // Цена добавления транзакции в новый кластер
-                    double maxDelta = DeltaAdd(null, tr, repulsCoeff);
+                    // Цена добавления транзакции в новый кластер. Отправная точка сравнения
+                    double maxDelta = DeltaAdd(null, transactionsTable[i], repulsCoeff);
 
                     // Запоминаем номер старого кластера, в котором лежала транзакция
-                    var oldClusterNumber = tr.ClusterNumber;
+                    var oldClusterNumber = transactionsTable[i].ClusterNumber;
                     var newClusterNumber = 0;
 
                     // Узнаем цену удаления транзакции из ее текущего кластера
-                    double removeDelta = DeltaRemove(clusterDict[oldClusterNumber], tr, repulsCoeff);
+                    double removeDelta = DeltaRemove(clusterDict[oldClusterNumber], transactionsTable[i], repulsCoeff);
 
                     //Теперь перебираем все кластеры, кроме того, где лежала наша транзакция
                     //и узнаем стоимость запиха транзакции туда
-                    var arrayWithoutCurrentCluster = clusterDict.Where(kvp => kvp.Key != tr.ClusterNumber).ToArray();
+                    var arrayWithoutCurrentCluster = clusterDict.Where(kvp => kvp.Key != transactionsTable[i].ClusterNumber).ToArray();
                     foreach (KeyValuePair<int, ClopeCluster> pair in arrayWithoutCurrentCluster)
                     {
-                        double addDelta = DeltaAdd(pair.Value, tr, repulsCoeff);
+                        double addDelta = DeltaAdd(pair.Value, transactionsTable[i], repulsCoeff);
 
-                        // Если суммарная стоимость от удаления и добавления в существующий кластер больше нуля,
-                        // решаем положить транзакцию в этот существующий кластер
-                        if (addDelta + removeDelta > 0)
+                        // Если стоимость от добавления транзакции в существующий кластер больше, чем в новый
+                        // предварительно решаем положить транзакцию в этот существующий кластер
+                        if (addDelta > maxDelta)
                         {
-                            //maxDelta = addDelta + removeDelta;
+                            maxDelta = addDelta;
 
                             // Запомнили новый кластер у транзакции
                             newClusterNumber = pair.Key;
-                            tr.ClusterNumber = newClusterNumber;
+                            transactionsTable[i].ClusterNumber = newClusterNumber;
                         }
                     }
 
-                    // Если в новый кластер положить выгоднее, кладем туда
+                    // Окончательное решение, куда выгоднее положить
                     if (maxDelta + removeDelta > 0)
                     {
-                        var clast = new ClopeCluster();
-                        clusterDict[oldClusterNumber].RemoveTransaction(tr);
-                        newClusterNumber = clusterDict.Count + 1;
-                        tr.ClusterNumber = newClusterNumber;
-                        clusterDict.Add(newClusterNumber, clast);
-                        clusterDict[newClusterNumber].AddTransaction(tr);
+                        //Если не нашлось подходящих существующих кластеров
+                        if (newClusterNumber == 0)
+                        {
+                            var clast = new ClopeCluster();
+                            clusterDict[oldClusterNumber].RemoveTransaction(transactionsTable[i]);
+                            newClusterNumber = clusterDict.Count + 1;
+                            transactionsTable[i].ClusterNumber = newClusterNumber;
+                            clusterDict.Add(newClusterNumber, clast);
+                            clusterDict[newClusterNumber].AddTransaction(transactionsTable[i]);
+                        }
+                        // Если имеющийся кластер нашелся
+                        else
+                        {
+                            clusterDict[oldClusterNumber].RemoveTransaction(transactionsTable[i]);
+                            clusterDict[newClusterNumber].AddTransaction(transactionsTable[i]);
+                        }
 
+                        // В любом случае перестановка имела место, вторая итерация будет
                         moved = true;
-                    }
 
-                    // Если был выявлен другой имеющийся кластер в foreach, куда выгоднее положить транзакцию, кладем её туда
-                    if (newClusterNumber != 0)
-                    {
-                        clusterDict[oldClusterNumber].RemoveTransaction(tr);
-                        clusterDict[newClusterNumber].AddTransaction(tr);
-
-                        moved = true;
+                        var count = transactionsTable.Count(t => t.ClusterNumber == 12);
+                        var position1 = transactionsTable.FindIndex(t => t.ClusterNumber == 12);
+                        var pos2 = transactionsTable.FindIndex(position1+1,t => t.ClusterNumber == 12);
                     }
                 }
             }
-
             // Удаляем пустые кластеры
             var clusterDictNew = clusterDict.Where(kvp => kvp.Value.TransCount != 0).ToDictionary(k => k.Key, k => k.Value);
             var clustDel = clusterDict.Where(kvp => kvp.Value.TransCount == 0);
