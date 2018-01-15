@@ -19,7 +19,7 @@ namespace ClopeCon.ClopeSnap
             repulsCoeff = repulsion;
         }
 
-        public void Initialise(string filePath)
+        public Calculationresult Initialise(string filePath)
         {
             StreamReader sr = new StreamReader(filePath);
 
@@ -89,20 +89,14 @@ namespace ClopeCon.ClopeSnap
             }
             sr.Close();
 
-            Console.WriteLine("Результаты фазы инициализации:");
-            foreach (var kvp in clusterDict)
+            return new Calculationresult
             {
-                Console.WriteLine($"Кластер №{kvp.Key} - {kvp.Value.TransCount} транзакций," +
-                                  $" p={(kvp.Value.TransactionList.Where(t => t.IsPoison)).Count()}," +
-                                  $" e={(kvp.Value.TransactionList.Where(t => !t.IsPoison)).Count()}");
-            }
-            Console.WriteLine($"Общее количество кластеров - {clusterDict.Count}");
-            Console.WriteLine($"Общее число транзакций в словаре - {clusterDict.Values.Select(k => k.TransCount).Sum()}");
-            Console.WriteLine($"Число транзакций в листе с номером кластера 12 - {transactionsTable.Count(t => t.ClusterNumber == 12)}");
-            Console.WriteLine("-------------------------------------------");
+                ClustersTable = clusterDict,
+                TransactionsTable = transactionsTable
+            };
         }
 
-        public void Iterate()
+        public Calculationresult  Iterate()
         {
             int countIteration = 0;
 
@@ -112,28 +106,24 @@ namespace ClopeCon.ClopeSnap
                 countIteration++;
                 moved = false;
 
-                var count1 = transactionsTable.Count(t => t.ClusterNumber == 12);
-                var t1 = transactionsTable[3001];
-                var t2 = transactionsTable[3040];
-
-                for  (int i = 0; i < transactionsTable.Count; i++)
+                foreach (Transaction tr in transactionsTable)
                 {
                     // Цена добавления транзакции в новый кластер. Отправная точка сравнения
-                    double maxDelta = DeltaAdd(null, transactionsTable[i], repulsCoeff);
+                    double maxDelta = DeltaAdd(null, tr, repulsCoeff);
 
                     // Запоминаем номер старого кластера, в котором лежала транзакция
-                    var oldClusterNumber = transactionsTable[i].ClusterNumber;
-                    var newClusterNumber = 0;
+                    var oldClusterNumber = tr.ClusterNumber;
+                    var newClusterNumber = -1;
 
                     // Узнаем цену удаления транзакции из ее текущего кластера
-                    double removeDelta = DeltaRemove(clusterDict[oldClusterNumber], transactionsTable[i], repulsCoeff);
+                    double removeDelta = DeltaRemove(clusterDict[oldClusterNumber], tr, repulsCoeff);
 
                     //Теперь перебираем все кластеры, кроме того, где лежала наша транзакция
                     //и узнаем стоимость запиха транзакции туда
-                    var arrayWithoutCurrentCluster = clusterDict.Where(kvp => kvp.Key != transactionsTable[i].ClusterNumber).ToArray();
+                    var arrayWithoutCurrentCluster = clusterDict.Where(kvp => kvp.Key != tr.ClusterNumber).ToArray();
                     foreach (KeyValuePair<int, ClopeCluster> pair in arrayWithoutCurrentCluster)
                     {
-                        double addDelta = DeltaAdd(pair.Value, transactionsTable[i], repulsCoeff);
+                        double addDelta = DeltaAdd(pair.Value, tr, repulsCoeff);
 
                         // Если стоимость от добавления транзакции в существующий кластер больше, чем в новый
                         // предварительно решаем положить транзакцию в этот существующий кластер
@@ -143,36 +133,32 @@ namespace ClopeCon.ClopeSnap
 
                             // Запомнили новый кластер у транзакции
                             newClusterNumber = pair.Key;
-                            transactionsTable[i].ClusterNumber = newClusterNumber;
                         }
                     }
 
-                    // Окончательное решение, куда выгоднее положить
+                    // Окончательное решение, куда выгоднее положить транзакцию
                     if (maxDelta + removeDelta > 0)
                     {
                         //Если не нашлось подходящих существующих кластеров
-                        if (newClusterNumber == 0)
+                        if (newClusterNumber == -1)
                         {
                             var clast = new ClopeCluster();
-                            clusterDict[oldClusterNumber].RemoveTransaction(transactionsTable[i]);
+                            clusterDict[oldClusterNumber].RemoveTransaction(tr);
                             newClusterNumber = clusterDict.Count + 1;
-                            transactionsTable[i].ClusterNumber = newClusterNumber;
+                            tr.ClusterNumber = newClusterNumber;
                             clusterDict.Add(newClusterNumber, clast);
-                            clusterDict[newClusterNumber].AddTransaction(transactionsTable[i]);
+                            clusterDict[newClusterNumber].AddTransaction(tr);
                         }
                         // Если имеющийся кластер нашелся
                         else
                         {
-                            clusterDict[oldClusterNumber].RemoveTransaction(transactionsTable[i]);
-                            clusterDict[newClusterNumber].AddTransaction(transactionsTable[i]);
+                            clusterDict[oldClusterNumber].RemoveTransaction(tr);
+                            clusterDict[newClusterNumber].AddTransaction(tr);
+                            tr.ClusterNumber = newClusterNumber;
                         }
 
                         // В любом случае перестановка имела место, вторая итерация будет
                         moved = true;
-
-                        var count = transactionsTable.Count(t => t.ClusterNumber == 12);
-                        var position1 = transactionsTable.FindIndex(t => t.ClusterNumber == 12);
-                        var pos2 = transactionsTable.FindIndex(position1+1,t => t.ClusterNumber == 12);
                     }
                 }
             }
@@ -180,22 +166,12 @@ namespace ClopeCon.ClopeSnap
             var clusterDictNew = clusterDict.Where(kvp => kvp.Value.TransCount != 0).ToDictionary(k => k.Key, k => k.Value);
             var clustDel = clusterDict.Where(kvp => kvp.Value.TransCount == 0);
 
-            Console.WriteLine("Результаты фазы итерации:");
-            Console.WriteLine($"Количество итераций: {countIteration}");
-            foreach (var kvp in clusterDictNew)
+            return new Calculationresult
             {
-                Console.WriteLine($"Кластер №{kvp.Key} - {kvp.Value.TransCount} транзакций," +
-                                  $" p={(kvp.Value.TransactionList.Where(t => t.IsPoison)).Count()}," +
-                                  $" e={(kvp.Value.TransactionList.Where(t => !t.IsPoison)).Count()}");
-            }
-            Console.WriteLine($"Количество непустых кластеров - {clusterDictNew.Count}");
-            Console.WriteLine($"Исчезли кластеры:");
-            foreach (var clust in clustDel)
-            {
-                Console.WriteLine(clust.Key);
-            }
-            Console.WriteLine($"Общее число транзакций - {clusterDictNew.Values.Select(k => k.TransCount).Sum()}");
-            Console.WriteLine("-------------------------------------------");
+                ClustersTable = clusterDictNew,
+                TransactionsTable = transactionsTable,
+                IterationCount = countIteration
+            };
         }
 
         private double DeltaAdd(ClopeCluster cluster, Transaction transaction, double r)

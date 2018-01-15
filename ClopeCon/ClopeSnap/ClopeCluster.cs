@@ -26,7 +26,10 @@ namespace ClopeCon.ClopeSnap
             for (int i = 0; i < length; i++)
             {
                 if (!_occ.ContainsKey(transaction.ArrayValues[i]))
+                {
                     _occ.Add(transaction.ArrayValues[i], 1);
+                    //continue;
+                }
                 _occ[transaction.ArrayValues[i]] += 1;
             }
             _width = _occ.Count;

@@ -39,8 +39,45 @@ namespace ClopeCon
 
             Console.WriteLine($"r = {repulsion}");
             var clope = new ClopeCulc(repulsion);
-            clope.Initialise(preparedDataFilePath);
-            clope.Iterate();
+
+            var initResult = clope.Initialise(preparedDataFilePath);
+
+            Console.WriteLine("Результаты фазы инициализации:");
+
+            foreach (var kvp in initResult.ClustersTable)
+            {
+                Console.WriteLine($"Кластер №{kvp.Key} - {kvp.Value.TransCount} транзакций," +
+                                  $" p={(kvp.Value.TransactionList.Where(t => t.IsPoison)).Count()}," +
+                                  $" e={(kvp.Value.TransactionList.Where(t => !t.IsPoison)).Count()}");
+            }
+            Console.WriteLine($"Общее количество кластеров - {initResult.ClustersTable.Count}");
+            Console.WriteLine($"Общее число транзакций в словаре - {initResult.ClustersTable.Values.Select(k => k.TransCount).Sum()}");
+            //Console.WriteLine($"Число транзакций в листе с номером кластера 12 - {InitResult.TransactionsTable.Count(t => t.ClusterNumber == 12)}");
+            Console.WriteLine("-------------------------------------------");
+
+            var iterateResult = clope.Iterate();
+
+            Console.WriteLine("Результаты фазы итерации:");
+            Console.WriteLine($"Количество итераций: {iterateResult.IterationCount}");
+            foreach (var kvp in iterateResult.ClustersTable)
+            {
+                Console.WriteLine($"Кластер №{kvp.Key} - {kvp.Value.TransCount} транзакций," +
+                                  $" p={(kvp.Value.TransactionList.Where(t => t.IsPoison)).Count()}," +
+                                  $" e={(kvp.Value.TransactionList.Where(t => !t.IsPoison)).Count()}");
+            }
+            Console.WriteLine($"Количество непустых кластеров - {iterateResult.ClustersTable.Count}");
+            Console.WriteLine($"Исчезли кластеры:");
+            foreach (var clustNumb in initResult.ClustersTable.Keys.Where(t => !iterateResult.ClustersTable.Keys.Contains(t)))
+            {
+                Console.WriteLine(clustNumb);
+            }
+            Console.WriteLine($"Добавились новые кластеры:");
+            foreach (var clustNumb1 in iterateResult.ClustersTable.Keys.Where(t => t > initResult.ClustersTable.Keys.Max()))
+            {
+                Console.WriteLine(clustNumb1);
+            }
+            Console.WriteLine($"Общее число транзакций в словаре - {iterateResult.ClustersTable.Values.Select(k => k.TransCount).Sum()}");
+            Console.WriteLine("-------------------------------------------");
 
             Console.ReadKey();
         }
