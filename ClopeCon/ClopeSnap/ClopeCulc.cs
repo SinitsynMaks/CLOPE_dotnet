@@ -89,6 +89,8 @@ namespace ClopeCon.ClopeSnap
             }
             sr.Close();
 
+            var count = transactionsTable.Count(t => t.ClusterNumber == 9);
+
             return new Calculationresult
             {
                 ClustersTable = clusterDict,
@@ -164,7 +166,6 @@ namespace ClopeCon.ClopeSnap
             }
             // Удаляем пустые кластеры
             var clusterDictNew = clusterDict.Where(kvp => kvp.Value.TransCount != 0).ToDictionary(k => k.Key, k => k.Value);
-            var clustDel = clusterDict.Where(kvp => kvp.Value.TransCount == 0);
 
             return new Calculationresult
             {
@@ -190,6 +191,8 @@ namespace ClopeCon.ClopeSnap
 
         private double DeltaRemove(ClopeCluster cluster, Transaction transaction, double r)
         {
+            if (cluster.TransCount == 1)
+                return -cluster.Square / Math.Pow(cluster.Width, r);
             double squareNew = cluster.Square - transaction.ArrayValues.Length;
             double widthNew = cluster.Width;
             for (int i = 0; i < transaction.ArrayValues.Length; i++)
