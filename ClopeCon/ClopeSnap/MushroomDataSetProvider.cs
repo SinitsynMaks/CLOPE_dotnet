@@ -7,9 +7,18 @@ using System.Threading.Tasks;
 
 namespace ClopeCon.ClopeSnap
 {
-    public static class MushroomDataSet
+    public class MushroomDataSetProvider : IDataSetProvider
     {
-        private static readonly Dictionary<int, Dictionary<char, int>> NormalizeDict = new Dictionary<int, Dictionary<char, int>>
+        public MushroomDataSetProvider(string sourcePath)
+        {
+            _sr = new StreamReader(sourcePath);
+        }
+
+        private StreamReader _sr;
+
+        #region Static Normalization
+
+        private Dictionary<int, Dictionary<char, int>> _normalizeDict = new Dictionary<int, Dictionary<char, int>>
             {
                 {1, new Dictionary<char, int> {
                     {'b', 1},
@@ -182,26 +191,81 @@ namespace ClopeCon.ClopeSnap
                 } }
             };
 
-        public static void Normalize(string inputFilePath, string outputFilePath)
+        public Dictionary<int, Dictionary<char, int>> NormalizeDict => _normalizeDict;
+
+        #endregion
+
+
+        private Dictionary<Tuple<int, string>, int> indexValueDict = new Dictionary<Tuple<int, string>, int>();
+
+        public bool GetTransaction(out Transaction transaction)
         {
-            StreamReader sr = new StreamReader(inputFilePath);
-            StreamWriter sw = new StreamWriter(File.Create(outputFilePath));
-            while (!sr.EndOfStream)
+            var isEnd = _sr.EndOfStream;
+            if (!isEnd)
             {
-                String line = sr.ReadLine();
-                string result = line[0] + ",";
-                string line1 = line.Substring(2, line.Length - 2);
-                string[] attributes = line1.Split(',');
-                
-                for (int i = 0; i < attributes.Length; i++)
+                String line = _sr.ReadLine();
+                string[] values = line.Substring(2).Split(',');
+                var intArrayValues = new int [values.Length];
+                for (int i = 0; i < values.Length; i++)
                 {
-                    if (attributes[i] != "?")
-                        result += NormalizeDict[i+1][attributes[i][0]] + ",";
+                    if (values[i] != "?")
+                    {
+                        var item = new Tuple<int, string>(i, values[i]);
+                        if (indexValueDict.ContainsKey(item))
+                        {
+                            intArrayValues[i] = indexValueDict[item];
+                        }
+                        else
+                        {
+                            var a = indexValueDict.Count;
+                            intArrayValues[i] = a;
+                            indexValueDict[item] = a;
+                        }
+                    }
                 }
-                sw.WriteLine(result.Substring(0, result.Length - 1));
+
+                transaction = new Transaction(intArrayValues);
+                switch (line[0])
+                {
+                    case 'p':
+                        transaction.IsPoison = true;
+                        break;
+                    case 'e':
+                        transaction.IsPoison = false;
+                        break;
+                }
+                return true;
             }
-            sr.Close();
-            sw.Close();
+                
+            _sr.Close();
+            transaction = null;
+            return false;
         }
+
+        //public void DoSomething()
+        //{
+        //    string row;
+        //    while ((row = reader.ReadLine()) != null)
+        //    {
+        //        string[] values = row.Substring(2).Split(','); // значения
+        //        for (int i = 0; i < values.Length; i++)
+        //        {
+        //            if (values[i] != "?")
+        //            {
+        //                Item item = new Item(i, values[i]); // ключ <индекс свойства, значение>, класс Item замени на Tuple<int, string> или Tuple<int, char>
+        //                if (!itemIndexDict.ContainsKey(item))
+        //                    itemIndexDict[item] = itemIndexDict.Count;
+        //            }
+        //        }
+        //    }
+        //}
+
+        //public int Normalize(T item)
+        //{
+        //    int result;
+        //    if (!hashtable.TryGetValue(item, out result))
+        //        result = hashtable[item] = hashtable.Count;
+        //    return result;
+        //}
     }
 }

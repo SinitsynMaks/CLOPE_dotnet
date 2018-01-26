@@ -11,12 +11,11 @@ namespace ClopeCon
     class Program
     {
         const string inputDataFilepath = "../../DataFiles/OriginDataSet.txt";
-        const string preparedDataFilePath = "../../DataFiles/PreparedData.txt";
+       // const string preparedDataFilePath = "../../DataFiles/PreparedData.txt";
 
         public static void Main(string[] args)
         {
-            Console.WriteLine("Выполняется инициализация данных");
-            MushroomDataSet.Normalize(inputDataFilepath, preparedDataFilePath);
+            IDataSetProvider dsProvider = new MushroomDataSetProvider(inputDataFilepath);
 
             double repulsion = 2.6;
 
@@ -38,9 +37,9 @@ namespace ClopeCon
             //tasks.Wait();
 
             Console.WriteLine($"r = {repulsion}");
-            var clope = new ClopeCulc(repulsion);
+            var clope = new ClopeCulc(dsProvider, repulsion);
 
-            var initResult = clope.Initialise(preparedDataFilePath);
+            var initResult = clope.Initialise();
 
             Console.WriteLine("Результаты фазы инициализации:");
 

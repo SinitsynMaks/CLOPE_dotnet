@@ -10,18 +10,21 @@ namespace ClopeCon.ClopeSnap
 {
     public class ClopeCulc
     {
+        private IDataSetProvider _dsProvider;
         private double repulsCoeff;
         private Dictionary<int, ClopeCluster> clusterDict = new Dictionary<int, ClopeCluster>();
         private List<Transaction> transactionsTable = new List<Transaction>();
 
-        public ClopeCulc(double repulsion)
+        public ClopeCulc(IDataSetProvider dsProvider, double repulsion)
         {
+            _dsProvider = dsProvider;
             repulsCoeff = repulsion;
         }
 
-        public Calculationresult Initialise(string filePath)
+        public CalculationResult Initialise()
         {
-            StreamReader sr = new StreamReader(filePath);
+            //StreamReader sr = new StreamReader(filePath);
+            
 
             // Максимальное добавление - опорное значение
             double maxDelta;
@@ -31,23 +34,20 @@ namespace ClopeCon.ClopeSnap
             double delta;
 
             // Получили самую первую транзакцию
-            string str = sr.ReadLine();
-            Transaction firstTransaction = str.GetTransaction();
-
-            // Кладем самую первую транзакцию в самый первый кластер
-            firstTransaction.ClusterNumber = 1;
-            var firstCluster = new ClopeCluster();
-            firstCluster.AddTransaction(firstTransaction); //Транзакция лежит в коллеции своего кластера
-            clusterDict.Add(1, firstCluster); // Первый кластер лежит в словаре под номером 1
-            transactionsTable.Add(firstTransaction); // Транзакции из файла хранятся в коллекции
+            if (_dsProvider.GetTransaction(out Transaction firstTransaction))
+            {
+                // Кладем самую первую транзакцию в самый первый кластер
+                firstTransaction.ClusterNumber = 1;
+                var firstCluster = new ClopeCluster();
+                firstCluster.AddTransaction(firstTransaction); //Транзакция лежит в коллеции своего кластера
+                clusterDict.Add(1, firstCluster); // Первый кластер лежит в словаре под номером 1
+                transactionsTable.Add(firstTransaction); // Транзакции из файла хранятся в коллекции
+            }
 
             // Теперь пошли циклом по остальным транзакциям
-            while (!sr.EndOfStream)
+            while (_dsProvider.GetTransaction(out Transaction currentTransaction))
             {
-                //Получаем очередную транзакцию
-                Transaction currentTransaction = sr.ReadLine().GetTransaction();
-
-                //Создаем новй пустой кластер-приемник. определим, каким он будет
+                //Создаем новый пустой кластер-приемник. определим, каким он будет
                 var clustNew = new ClopeCluster();
 
                 //Считаем цену добавления транз в новый(пустой) кластер
@@ -87,18 +87,17 @@ namespace ClopeCon.ClopeSnap
                 //Транзакцию кладем в наш кэш-лист для второй итерации
                 transactionsTable.Add(currentTransaction);
             }
-            sr.Close();
 
             var count = transactionsTable.Count(t => t.ClusterNumber == 9);
 
-            return new Calculationresult
+            return new CalculationResult
             {
                 ClustersTable = clusterDict,
                 TransactionsTable = transactionsTable
             };
         }
 
-        public Calculationresult  Iterate()
+        public CalculationResult  Iterate()
         {
             int countIteration = 0;
 
@@ -164,10 +163,9 @@ namespace ClopeCon.ClopeSnap
                     }
                 }
             }
-            // Удаляем пустые кластеры
             var clusterDictNew = clusterDict.Where(kvp => kvp.Value.TransCount != 0).ToDictionary(k => k.Key, k => k.Value);
 
-            return new Calculationresult
+            return new CalculationResult
             {
                 ClustersTable = clusterDictNew,
                 TransactionsTable = transactionsTable,
@@ -191,8 +189,11 @@ namespace ClopeCon.ClopeSnap
 
         private double DeltaRemove(ClopeCluster cluster, Transaction transaction, double r)
         {
+            // Удаление посленей транзакции из кластера равносильно
+            // добавлению транзакции в новый (пустой) кластер только с другим знаком
             if (cluster.TransCount == 1)
                 return -cluster.Square / Math.Pow(cluster.Width, r);
+
             double squareNew = cluster.Square - transaction.ArrayValues.Length;
             double widthNew = cluster.Width;
             for (int i = 0; i < transaction.ArrayValues.Length; i++)

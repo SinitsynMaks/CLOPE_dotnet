@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClopeCon.ClopeSnap
 {
-    public class Calculationresult
+    public class CalculationResult
     {
         public Dictionary<int, ClopeCluster> ClustersTable { get; set; }
         public List<Transaction> TransactionsTable { get; set; }

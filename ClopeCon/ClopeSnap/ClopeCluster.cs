@@ -11,7 +11,10 @@ namespace ClopeCon.ClopeSnap
         public double Square => _square;
         public double Width => _width;
         public int TransCount => _transCount; // Количество транзакций в кластере
-        public Dictionary<int, int> Occ => _occ; // Количество вхождений каждого элемента транзакции в кластере
+
+        //TODO: Сделать индексированным сво-м только на get
+        // Readonly Dictionary
+        public IReadOnlyDictionary<int, int> Occ => _occ; // Количество вхождений каждого элемента транзакции в кластере
         public List<Transaction> TransactionList { get; } = new List<Transaction>();
 
         private double _square;
@@ -26,10 +29,7 @@ namespace ClopeCon.ClopeSnap
             for (int i = 0; i < length; i++)
             {
                 if (!_occ.ContainsKey(transaction.ArrayValues[i]))
-                {
-                    _occ.Add(transaction.ArrayValues[i], 1);
-                    //continue;
-                }
+                    _occ.Add(transaction.ArrayValues[i], 0);
                 _occ[transaction.ArrayValues[i]] += 1;
             }
             _width = _occ.Count;
