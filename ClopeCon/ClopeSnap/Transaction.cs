@@ -8,13 +8,13 @@ namespace ClopeCon.ClopeSnap
 {
     public class Transaction
     {
-        public Transaction(int[] parameters)
+        public Transaction(List<int> values)
         {
-            ArrayValues = parameters;
+            ArrayValues = values;
         }
 
         //Массив всех значений текущей транзакции
-        public int[] ArrayValues { get; }
+        public List<int> ArrayValues { get; }
 
         //Количество уникальных элементов в транзакции, она же ширина кластера
         //Параметр необходим при добавлении транзакции в пустой кластер

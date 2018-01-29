@@ -287,3 +287,8 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 .vs/ClopeCon/v15/.suo
+ClopeCon/bin/Debug/ClopeCon.pdb
+ClopeCon/obj/Debug/ClopeCon.exe
+ClopeCon/obj/Debug/ClopeCon.pdb
+ClopeCon/obj/Debug/ClopeCon.csproj.CoreCompileInputs.cache
+.vs/ClopeCon/v15/.suo

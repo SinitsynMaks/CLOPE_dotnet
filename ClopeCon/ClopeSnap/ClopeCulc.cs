@@ -176,11 +176,11 @@ namespace ClopeCon.ClopeSnap
         private double DeltaAdd(ClopeCluster cluster, Transaction transaction, double r)
         {
             if (cluster == null)
-                return transaction.ArrayValues.Length / Math.Pow(transaction.UniqueParameters, r);
+                return transaction.ArrayValues.Count / Math.Pow(transaction.UniqueParameters, r);
 
-            double squareNew = cluster.Square + transaction.ArrayValues.Length;
+            double squareNew = cluster.Square + transaction.ArrayValues.Count;
             double widthNew = cluster.Width;
-            for (int i = 0; i < transaction.ArrayValues.Length; i++)
+            for (int i = 0; i < transaction.ArrayValues.Count; i++)
                 if (!cluster.Occ.ContainsKey(transaction.ArrayValues[i]))
                     widthNew++;
             var res = squareNew * (cluster.TransCount + 1) / Math.Pow(widthNew, r) - cluster.Square * cluster.TransCount / Math.Pow(cluster.Width, r);
@@ -194,9 +194,9 @@ namespace ClopeCon.ClopeSnap
             if (cluster.TransCount == 1)
                 return -cluster.Square / Math.Pow(cluster.Width, r);
 
-            double squareNew = cluster.Square - transaction.ArrayValues.Length;
+            double squareNew = cluster.Square - transaction.ArrayValues.Count;
             double widthNew = cluster.Width;
-            for (int i = 0; i < transaction.ArrayValues.Length; i++)
+            for (int i = 0; i < transaction.ArrayValues.Count; i++)
                 if (cluster.Occ[transaction.ArrayValues[i]] == 1)
                     widthNew--;
             return squareNew * (cluster.TransCount - 1) / Math.Pow(widthNew, r) - cluster.Square * cluster.TransCount / Math.Pow(cluster.Width, r);

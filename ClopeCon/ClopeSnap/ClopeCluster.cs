@@ -24,7 +24,7 @@ namespace ClopeCon.ClopeSnap
 
         public void AddTransaction(Transaction transaction)
         {
-            var length = transaction.ArrayValues.Length;
+            var length = transaction.ArrayValues.Count;
             _square += length;
             for (int i = 0; i < length; i++)
             {
@@ -39,7 +39,7 @@ namespace ClopeCon.ClopeSnap
 
         public void RemoveTransaction(Transaction transaction)
         {
-            var length = transaction.ArrayValues.Length;
+            var length = transaction.ArrayValues.Count;
             _square -= length;
             for (int i = 0; i < length; i++)
             {

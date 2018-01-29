@@ -195,7 +195,7 @@ namespace ClopeCon.ClopeSnap
 
         #endregion
 
-
+        #region DynamicNormalization
         private Dictionary<Tuple<int, string>, int> indexValueDict = new Dictionary<Tuple<int, string>, int>();
 
         public bool GetTransaction(out Transaction transaction)
@@ -205,7 +205,7 @@ namespace ClopeCon.ClopeSnap
             {
                 String line = _sr.ReadLine();
                 string[] values = line.Substring(2).Split(',');
-                var intArrayValues = new int [values.Length];
+                var intValuesList = new List<int>();
                 for (int i = 0; i < values.Length; i++)
                 {
                     if (values[i] != "?")
@@ -213,18 +213,18 @@ namespace ClopeCon.ClopeSnap
                         var item = new Tuple<int, string>(i, values[i]);
                         if (indexValueDict.ContainsKey(item))
                         {
-                            intArrayValues[i] = indexValueDict[item];
+                            intValuesList.Add(indexValueDict[item]);
                         }
                         else
                         {
-                            var a = indexValueDict.Count;
-                            intArrayValues[i] = a;
-                            indexValueDict[item] = a;
+                            var val = indexValueDict.Count;
+                            intValuesList.Add(val);
+                            indexValueDict[item] = val;
                         }
                     }
                 }
 
-                transaction = new Transaction(intArrayValues);
+                transaction = new Transaction(intValuesList);
                 switch (line[0])
                 {
                     case 'p':
@@ -236,10 +236,11 @@ namespace ClopeCon.ClopeSnap
                 }
                 return true;
             }
-                
+
             _sr.Close();
             transaction = null;
             return false;
         }
+        #endregion
     }
 }

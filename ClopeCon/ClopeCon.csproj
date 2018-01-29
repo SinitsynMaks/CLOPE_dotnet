@@ -47,7 +47,6 @@
     <Compile Include="ClopeSnap\ClopeCulc.cs" />
     <Compile Include="ClopeSnap\IDataSetProvider.cs" />
     <Compile Include="ClopeSnap\MushroomDataSetProvider.cs" />
-    <Compile Include="ClopeSnap\StringUtil.cs" />
     <Compile Include="ClopeSnap\Transaction.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
