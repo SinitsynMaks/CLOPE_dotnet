@@ -241,31 +241,5 @@ namespace ClopeCon.ClopeSnap
             transaction = null;
             return false;
         }
-
-        //public void DoSomething()
-        //{
-        //    string row;
-        //    while ((row = reader.ReadLine()) != null)
-        //    {
-        //        string[] values = row.Substring(2).Split(','); // значения
-        //        for (int i = 0; i < values.Length; i++)
-        //        {
-        //            if (values[i] != "?")
-        //            {
-        //                Item item = new Item(i, values[i]); // ключ <индекс свойства, значение>, класс Item замени на Tuple<int, string> или Tuple<int, char>
-        //                if (!itemIndexDict.ContainsKey(item))
-        //                    itemIndexDict[item] = itemIndexDict.Count;
-        //            }
-        //        }
-        //    }
-        //}
-
-        //public int Normalize(T item)
-        //{
-        //    int result;
-        //    if (!hashtable.TryGetValue(item, out result))
-        //        result = hashtable[item] = hashtable.Count;
-        //    return result;
-        //}
     }
 }
