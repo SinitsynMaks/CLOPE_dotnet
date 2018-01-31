@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace ClopeCon.ClopeSnap
 {
-    class ClopeCalc2
+    class ClopeCulc2
     {
         private IEnumerator _dsProvider;
         private double repulsCoeff;
         private Dictionary<int, ClopeCluster> clusterDict = new Dictionary<int, ClopeCluster>();
         private List<Transaction> transactionsTable = new List<Transaction>();
 
-        public ClopeCalc2(IEnumerator dsProvider, double repulsion)
+        public ClopeCulc2(IEnumerator dsProvider, double repulsion)
         {
             _dsProvider = dsProvider;
             repulsCoeff = repulsion;

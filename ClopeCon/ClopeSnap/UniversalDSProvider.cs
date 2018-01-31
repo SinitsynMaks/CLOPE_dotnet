@@ -12,7 +12,6 @@ namespace ClopeCon.ClopeSnap
     {
         private string DataPath;
         private StreamReader sr;
-        private string currentString;
         private Dictionary<Tuple<int, string>, int> indexValueDict = new Dictionary<Tuple<int, string>, int>();
 
         public UniversalDSProvider(string dataPath)
@@ -23,7 +22,6 @@ namespace ClopeCon.ClopeSnap
 
         public bool MoveNext()
         {
-            //currentString = sr.ReadLine();
             return !sr.EndOfStream;
         }
 

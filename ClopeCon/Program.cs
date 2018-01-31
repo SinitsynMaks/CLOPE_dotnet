@@ -40,7 +40,7 @@ namespace ClopeCon
 
             Console.WriteLine($"r = {repulsion}");
             //var clope = new ClopeCulc(dsProvider, repulsion);
-            var clope = new ClopeCalc2(dsProvider, repulsion);
+            var clope = new ClopeCulc2(dsProvider, repulsion);
 
             var initResult = clope.Initialise();
 
