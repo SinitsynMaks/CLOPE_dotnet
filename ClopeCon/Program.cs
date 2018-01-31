@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,7 +16,8 @@ namespace ClopeCon
 
         public static void Main(string[] args)
         {
-            IDataSetProvider dsProvider = new MushroomDataSetProvider(inputDataFilepath);
+            //IDataSetProvider dsProvider = new MushroomDataSetProvider(inputDataFilepath);
+            IEnumerator dsProvider = new UniversalDSProvider(inputDataFilepath);
 
             double repulsion = 2.6;
 
@@ -37,7 +39,8 @@ namespace ClopeCon
             //tasks.Wait();
 
             Console.WriteLine($"r = {repulsion}");
-            var clope = new ClopeCulc(dsProvider, repulsion);
+            //var clope = new ClopeCulc(dsProvider, repulsion);
+            var clope = new ClopeCalc2(dsProvider, repulsion);
 
             var initResult = clope.Initialise();
 

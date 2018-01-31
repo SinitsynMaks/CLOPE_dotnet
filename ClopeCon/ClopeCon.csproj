@@ -43,11 +43,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClopeSnap\Calculationresult.cs" />
+    <Compile Include="ClopeSnap\ClopeCalc2.cs" />
     <Compile Include="ClopeSnap\ClopeCluster.cs" />
     <Compile Include="ClopeSnap\ClopeCulc.cs" />
     <Compile Include="ClopeSnap\IDataSetProvider.cs" />
     <Compile Include="ClopeSnap\MushroomDataSetProvider.cs" />
     <Compile Include="ClopeSnap\Transaction.cs" />
+    <Compile Include="ClopeSnap\UniversalDSProvider.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
