@@ -17,3 +17,7 @@ C:\Sinitsyn\Programming\ClopeCon\ClopeConTest\obj\Debug\ClopeConTest.csprojResol
 C:\Sinitsyn\Programming\ClopeCon\ClopeConTest\obj\Debug\ClopeConTest.csproj.CoreCompileInputs.cache
 C:\Sinitsyn\Programming\ClopeCon\ClopeConTest\obj\Debug\ClopeConTest.dll
 C:\Sinitsyn\Programming\ClopeCon\ClopeConTest\obj\Debug\ClopeConTest.pdb
+C:\Sinitsyn\CLOPE_dotnet\ClopeConTest\obj\Debug\ClopeConTest.csprojResolveAssemblyReference.cache
+C:\Sinitsyn\CLOPE_dotnet\ClopeConTest\obj\Debug\ClopeConTest.csproj.CoreCompileInputs.cache
+C:\Sinitsyn\CLOPE_dotnet\ClopeConTest\obj\Debug\ClopeConTest.dll
+C:\Sinitsyn\CLOPE_dotnet\ClopeConTest\obj\Debug\ClopeConTest.pdb
