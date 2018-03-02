@@ -43,14 +43,14 @@ namespace ClopeConTest
         [TestMethod]
         public void Initialise_TestSuccess()
         {
-            MushroomDataSet.Normalize(path, preparedDataFilePath);
+            //MushroomDataSet.Normalize(path, preparedDataFilePath);
             double repulsCoeff = 2.6;
             List<Transaction> transactTable;
-            ClopeCulc.Initialise(preparedDataFilePath, repulsCoeff, out transactTable);
+           // ClopeCulc.Initialise(preparedDataFilePath, repulsCoeff, out transactTable);
 
-            var result = ClopeCulc.clusterDict;
-            var clustCount = result.Count;
-            var transCount = result.Select(kvp => kvp.Value.TransCount).Sum();
+           // var result = ClopeCulc.clusterDict;
+           // var clustCount = result.Count;
+           // var transCount = result.Select(kvp => kvp.Value.TransCount).Sum();
 
         }
 
@@ -60,8 +60,8 @@ namespace ClopeConTest
 
             double repulsCoeff = 2.6;
 
-            ClopeCulc.Execute(preparedDataFilePath, repulsCoeff);
-            var res = ClopeCulc.clusterDict;
+            //ClopeCulc.Execute(preparedDataFilePath, repulsCoeff);
+            //var res = ClopeCulc.clusterDict;
         }
     }
 }
