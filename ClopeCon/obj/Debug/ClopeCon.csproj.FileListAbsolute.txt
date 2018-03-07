@@ -12,3 +12,10 @@ C:\Sinitsyn\CLOPE_dotnet\ClopeCon\obj\Debug\ClopeCon.csprojResolveAssemblyRefere
 C:\Sinitsyn\CLOPE_dotnet\ClopeCon\obj\Debug\ClopeCon.csproj.CoreCompileInputs.cache
 C:\Sinitsyn\CLOPE_dotnet\ClopeCon\obj\Debug\ClopeCon.exe
 C:\Sinitsyn\CLOPE_dotnet\ClopeCon\obj\Debug\ClopeCon.pdb
+C:\Projects\Clope\CLOPE_dotnet\ClopeCon\bin\Debug\ClopeCon.exe.config
+C:\Projects\Clope\CLOPE_dotnet\ClopeCon\bin\Debug\ClopeCon.exe
+C:\Projects\Clope\CLOPE_dotnet\ClopeCon\bin\Debug\ClopeCon.pdb
+C:\Projects\Clope\CLOPE_dotnet\ClopeCon\obj\Debug\ClopeCon.csprojResolveAssemblyReference.cache
+C:\Projects\Clope\CLOPE_dotnet\ClopeCon\obj\Debug\ClopeCon.csproj.CoreCompileInputs.cache
+C:\Projects\Clope\CLOPE_dotnet\ClopeCon\obj\Debug\ClopeCon.exe
+C:\Projects\Clope\CLOPE_dotnet\ClopeCon\obj\Debug\ClopeCon.pdb

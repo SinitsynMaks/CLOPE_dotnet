@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 
 namespace ClopeCon.ClopeSnap
 {
+    /// <summary>
+    /// Второй вариант реализации алгоритма CLOPE.
+    /// Класс работает со стандартным энумератором, перебиращим транзакций.
+    /// </summary>
     class ClopeCulc2
     {
         private IEnumerator _dsProvider;

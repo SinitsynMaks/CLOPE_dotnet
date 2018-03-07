@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace ClopeCon.ClopeSnap
 {
+    /// <summary>
+    /// Первый вариант реализации алгоритма CLOPE.
+    /// Класс работает со специализированным интерфейсом получения транзакций.
+    /// </summary>
     public class ClopeCulc
     {
         private IDataSetProvider _dsProvider;
@@ -15,22 +19,27 @@ namespace ClopeCon.ClopeSnap
         private Dictionary<int, ClopeCluster> clusterDict = new Dictionary<int, ClopeCluster>();
         private List<Transaction> transactionsTable = new List<Transaction>();
 
+        /// <summary>
+        /// Конструктор класса-реализатора CLOPE.
+        /// </summary>
+        /// <typeparam name="dsProvider">Объект, предоставляющий транзакции</typeparam>
+        /// <typeparam name="repulsion">Коэффициент отталкивания</typeparam>
         public ClopeCulc(IDataSetProvider dsProvider, double repulsion)
         {
             _dsProvider = dsProvider;
             repulsCoeff = repulsion;
         }
 
+        /// <summary>
+        /// Реализация первой фазы алгоритма - инициализации
+        /// </summary>
         public CalculationResult Initialise()
         {
-            //StreamReader sr = new StreamReader(filePath);
-            
-
             // Максимальное добавление - опорное значение
             double maxDelta;
 
             // Текущее добавление либо к пустому либо к существующему кластеру
-            // Сравнивается с опорным
+            // Сравнивается с опорным maxDelta
             double delta;
 
             // Получили самую первую транзакцию
@@ -97,6 +106,9 @@ namespace ClopeCon.ClopeSnap
             };
         }
 
+        /// <summary>
+        /// Реализация фазы итерации алгоритма
+        /// </summary>
         public CalculationResult  Iterate()
         {
             int countIteration = 0;

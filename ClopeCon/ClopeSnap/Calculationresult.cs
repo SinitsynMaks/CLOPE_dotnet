@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace ClopeCon.ClopeSnap
 {
+    /// <summary>
+    /// Класса-аггрегатор результатов работы фаз алгоритма CLOPE.
+    /// </summary>
     public class CalculationResult
     {
         public Dictionary<int, ClopeCluster> ClustersTable { get; set; }

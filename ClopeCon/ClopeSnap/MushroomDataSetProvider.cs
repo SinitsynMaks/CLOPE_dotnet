@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace ClopeCon.ClopeSnap
 {
+    /// <summary>
+    /// Класса-поставщик транзакций для вычисления алгоритма CLOPE.
+    /// </summary>
     public class MushroomDataSetProvider : IDataSetProvider
     {
         public MushroomDataSetProvider(string sourcePath)

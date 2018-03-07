@@ -8,31 +8,14 @@ using System.Threading.Tasks;
 
 namespace ClopeCon.ClopeSnap
 {
-    class UniversalDSProvider<T> : IEnumerator<T>
+    class UniversalDSProvider2<T> : IEnumerator<T> where T : class, new ()
     {
-        private string DataPath;
         private StreamReader sr;
         private Dictionary<Tuple<int, string>, int> indexValueDict = new Dictionary<Tuple<int, string>, int>();
 
-        public UniversalDSProvider(string dataPath)
-        {
-            DataPath = dataPath;
-            sr = new StreamReader(DataPath);
-        }
+        object IEnumerator.Current => Current;
 
-        public bool MoveNext()
-        {
-            return !sr.EndOfStream;
-        }
-
-        public void Reset()
-        {
-            sr.Close();
-        }
-
-        T IEnumerator<T>.Current => Current;
-
-        public T Current => GetCurrentTranzaction();
+        public T Current => GetCurrentTranzaction;
 
         private T GetCurrentTranzaction()
         {
@@ -55,23 +38,33 @@ namespace ClopeCon.ClopeSnap
                         indexValueDict[item] = val;
                     }
                 }
-            }
 
-            var transaction = new T(intValuesList);
-            switch (str[0])
-            {
-                case 'p':
-                    transaction.IsPoison = true;
-                    break;
-                case 'e':
-                    transaction.IsPoison = false;
-                    break;
-            }
+                var transaction = new T(intValuesList);
+                switch (str[0])
+                {
+                    case 'p':
+                        //transaction.IsPoison = true;
+                        break;
+                    case 'e':
+                       // transaction.IsPoison = false;
+                        break;
+                }
 
-            return transaction;
+                return transaction;
+            }
         }
 
         public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool MoveNext()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Reset()
         {
             throw new NotImplementedException();
         }

@@ -42,7 +42,7 @@ namespace ClopeCon
             //var clope = new ClopeCulc(dsProvider, repulsion);
             var clope = new ClopeCulc2(dsProvider, repulsion);
 
-            var initResult = clope.Initialise();
+            CalculationResult initResult = clope.Initialise();
 
             Console.WriteLine("Результаты фазы инициализации:");
 
@@ -54,7 +54,7 @@ namespace ClopeCon
             }
             Console.WriteLine($"Общее количество кластеров - {initResult.ClustersTable.Count}");
             Console.WriteLine($"Общее число транзакций в словаре - {initResult.ClustersTable.Values.Select(k => k.TransCount).Sum()}");
-            //Console.WriteLine($"Число транзакций в листе с номером кластера 12 - {InitResult.TransactionsTable.Count(t => t.ClusterNumber == 12)}");
+            Console.WriteLine($"Общее число транзакций в листе - {initResult.TransactionsTable.Count}");
             Console.WriteLine("-------------------------------------------");
 
             var iterateResult = clope.Iterate();

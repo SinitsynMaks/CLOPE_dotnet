@@ -50,6 +50,7 @@
     <Compile Include="ClopeSnap\MushroomDataSetProvider.cs" />
     <Compile Include="ClopeSnap\Transaction.cs" />
     <Compile Include="ClopeSnap\UniversalDSProvider.cs" />
+    <Compile Include="ClopeSnap\UniversalDSProvider2.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
